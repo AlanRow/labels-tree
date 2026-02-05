@@ -90,7 +90,17 @@ export class TreeStore {
   #getNode(id: ItemId) {
     return this.#idMap.get(id)
   }
+  #removeSubtreeRecursively(node: TreeNode) {
+    this.#idMap.delete(node.raw.id)
+    node.childrenNodes.forEach(this.#removeSubtreeRecursively.bind(this))
+  }
+  #removeFromRoots(node: RootNode) {
+    const rootIndex = this.#roots.indexOf(node)
+    this.#roots.splice(rootIndex, 1)
+  }
 
+  // тут есть один проход по массиву и сложность O(n), но если хранить
+  // оригинальный массив, то презко ухудшится удаление
   getAll(): RawItem[] {
     const rawArray: RawItem[] = []
 
@@ -146,12 +156,89 @@ export class TreeStore {
     return path.map((node) => node.raw)
   }
   addItem(item: RawItem): void {
-    throw Error('Not implemented')
+    if (this.#idMap.has(item.id)) throw new Error(`Элемент <${item.id}> уже добавлен`)
+
+    if (item.parent === null) {
+      const node: RootNode = {
+        raw: item,
+        parentNode: null,
+        childrenNodes: [],
+      }
+
+      this.#roots.push(node)
+      this.#idMap.set(item.id, node)
+    } else {
+      const parentNode = this.#getNode(item.parent)
+
+      if (parentNode === undefined) throw new Error(`Родительский элемент ${item.parent} не найден`)
+
+      const node: ChildNode = {
+        raw: item,
+        parentNode,
+        childrenNodes: [],
+      }
+
+      parentNode.childrenNodes.push(node)
+      this.#idMap.set(item.id, node)
+    }
   }
   removeItem(id: ItemId): void {
-    throw Error('Not implemented')
+    const node = this.#getNode(id)
+    if (node === undefined) throw new Error(`Элемент <${id}> не обнаружен`)
+
+    const { parentNode } = node
+
+    if (parentNode === null) {
+      // вычищаем из списка рутов, если элемент был там
+      this.#removeFromRoots(node)
+    } else {
+      // у поддеревьев нет смысла удалять, они и так пропадут из доступа
+      // а garbage collector'у V8 это не помешает их удалить, так что без утечек
+      const childrenIndex = parentNode.childrenNodes.indexOf(node)
+      parentNode.childrenNodes.splice(childrenIndex, 1)
+    }
+
+    this.#removeSubtreeRecursively(node)
   }
   updateItem(newData: { id: ItemId } & Partial<RawItem>): void {
-    throw Error('Not implemented')
+    const { id } = newData
+
+    const node = this.#getNode(id)
+    if (node === undefined) throw new Error(`Элемент <${id}> не обнаружен`)
+
+    const oldData = node.raw
+
+    // обновляем по ссылке, так что везде отразится
+    const updatedData = {
+      ...oldData,
+      ...newData,
+    }
+    node.raw = updatedData
+
+    if (oldData.parent !== newData.parent && newData.parent !== undefined) {
+      if (oldData.parent === null) {
+        // если это был корневой элемент, то надо его убрать из списка рутовых
+        this.#removeFromRoots(node as RootNode)
+      } else {
+        // если был другой родитель, то надо удалить элемент из списка детей
+        const parentChildren = (node as ChildNode).parentNode.childrenNodes
+        const nodeIndex = parentChildren.indexOf(node as ChildNode)
+        parentChildren.splice(nodeIndex, 1)
+      }
+
+      if (newData.parent === null) {
+        // если это теперь корневой элемент, то надо добавить его в список рутовых
+        this.#roots.push(node as RootNode)
+      } else {
+        // если элемент полчуил нового родителя, то надо добавить его в список детей
+        const newParent = this.#getNode(newData.parent)
+        if (newParent === undefined) {
+          throw new Error(`Новый родительский элемент <${newData.parent}> не обнаружен`)
+        }
+
+        ;(node as ChildNode).parentNode = newParent
+        newParent.childrenNodes.push(node as ChildNode)
+      }
+    }
   }
 }
