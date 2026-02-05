@@ -51,11 +51,11 @@ export class TreeStore {
 
     // для начала пробегаемся по массиву, чтобы индексировать значения и собрать корни
     data.forEach((item) => {
-      const node: TreeNode = {
+      const node = {
         raw: { ...item },
         parentNode: null,
         childrenNodes: [],
-      }
+      } as TreeNode
 
       this.#idMap.set(item.id, node)
 
