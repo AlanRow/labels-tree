@@ -40,143 +40,143 @@ describe('TreeStore', () => {
     })
   })
 
-  // describe('getItem()', () => {
-  //   it('number id', () => {
-  //     const data = [{ id: 1, parent: null, label: 'Root' }]
-  //     const store = new TreeStore(data)
+  describe('getItem()', () => {
+    it('number id', () => {
+      const data = [{ id: 1, parent: null, label: 'Root' }]
+      const store = new TreeStore(data)
 
-  //     expect(store.getItem(1)).toEqual(data[0])
-  //   })
-  //   it('string id', () => {
-  //     const data = [{ id: 'root', parent: null, label: 'Root' }]
-  //     const store = new TreeStore(data)
+      expect(store.getItem(1)).toEqual(data[0])
+    })
+    it('string id', () => {
+      const data = [{ id: 'root', parent: null, label: 'Root' }]
+      const store = new TreeStore(data)
 
-  //     expect(store.getItem('root')).toEqual(data[0])
-  //   })
-  //   it('ids "1" and 1', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'number' },
-  //       { id: '1', parent: null, label: 'string' },
-  //     ]
-  //     const store = new TreeStore(data)
+      expect(store.getItem('root')).toEqual(data[0])
+    })
+    it('ids "1" and 1', () => {
+      const data = [
+        { id: 1, parent: null, label: 'number' },
+        { id: '1', parent: null, label: 'string' },
+      ]
+      const store = new TreeStore(data)
 
-  //     expect(store.getItem(1)?.label).toBe('number')
-  //     expect(store.getItem('1')?.label).toBe('string')
-  //   })
-  //   it('no existing id', () => {
-  //     const data = [{ id: 1, parent: null, label: 'Root' }]
-  //     const store = new TreeStore(data)
+      expect(store.getItem(1)?.label).toBe('number')
+      expect(store.getItem('1')?.label).toBe('string')
+    })
+    it('no existing id', () => {
+      const data = [{ id: 1, parent: null, label: 'Root' }]
+      const store = new TreeStore(data)
 
-  //     expect(store.getItem(999)).toBeUndefined()
-  //   })
-  // })
+      expect(store.getItem(999)).toBeUndefined()
+    })
+  })
 
-  // describe('getChildren()', () => {
-  //   it('leaf node with no children', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'Root' },
-  //       { id: 2, parent: 1, label: 'Child' },
-  //     ]
-  //     const store = new TreeStore(data)
+  describe('getChildren()', () => {
+    it('leaf node with no children', () => {
+      const data = [
+        { id: 1, parent: null, label: 'Root' },
+        { id: 2, parent: 1, label: 'Child' },
+      ]
+      const store = new TreeStore(data)
 
-  //     expect(store.getChildren(2).length).toBe(0)
-  //   })
-  //   it('parent with children', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'Root' },
-  //       { id: 2, parent: 1, label: 'Child 1' },
-  //       { id: 3, parent: 1, label: 'Child 2' },
-  //     ]
-  //     const store = new TreeStore(data)
-  //     const children = store.getChildren(1)
+      expect(store.getChildren(2).length).toBe(0)
+    })
+    it('parent with children', () => {
+      const data = [
+        { id: 1, parent: null, label: 'Root' },
+        { id: 2, parent: 1, label: 'Child 1' },
+        { id: 3, parent: 1, label: 'Child 2' },
+      ]
+      const store = new TreeStore(data)
+      const children = store.getChildren(1)
 
-  //     expect(children).toHaveLength(2)
-  //     expect(children).toContainEqual(data[1])
-  //     expect(children).toContainEqual(data[2])
-  //   })
-  //   it('parent with multulayer descendants', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'Root' },
-  //       { id: 2, parent: 1, label: 'Child' },
-  //       { id: 3, parent: 2, label: 'Grandchild' },
-  //     ]
-  //     const store = new TreeStore(data)
+      expect(children).toHaveLength(2)
+      expect(children).toContainEqual(data[1])
+      expect(children).toContainEqual(data[2])
+    })
+    it('parent with multulayer descendants', () => {
+      const data = [
+        { id: 1, parent: null, label: 'Root' },
+        { id: 2, parent: 1, label: 'Child' },
+        { id: 3, parent: 2, label: 'Grandchild' },
+      ]
+      const store = new TreeStore(data)
 
-  //     expect(store.getChildren(1)).toEqual([data[1]])
-  //     expect(store.getChildren(2)).toEqual([data[2]])
-  //   })
-  // })
+      expect(store.getChildren(1)).toEqual([data[1]])
+      expect(store.getChildren(2)).toEqual([data[2]])
+    })
+  })
 
-  // describe('getAllChildren()', () => {
-  //   it('leaf node with no children', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'Root' },
-  //       { id: 2, parent: 1, label: 'Child' },
-  //     ]
-  //     const store = new TreeStore(data)
+  describe('getAllChildren()', () => {
+    it('leaf node with no children', () => {
+      const data = [
+        { id: 1, parent: null, label: 'Root' },
+        { id: 2, parent: 1, label: 'Child' },
+      ]
+      const store = new TreeStore(data)
 
-  //     expect(store.getAllChildren(2)).toEqual([])
-  //   })
-  //   it('parent with directly children', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'Root' },
-  //       { id: 2, parent: 1, label: 'Child 1' },
-  //       { id: 3, parent: 1, label: 'Child 2' },
-  //     ]
-  //     const store = new TreeStore(data)
-  //     const allChildren = store.getAllChildren(1)
+      expect(store.getAllChildren(2)).toEqual([])
+    })
+    it('parent with directly children', () => {
+      const data = [
+        { id: 1, parent: null, label: 'Root' },
+        { id: 2, parent: 1, label: 'Child 1' },
+        { id: 3, parent: 1, label: 'Child 2' },
+      ]
+      const store = new TreeStore(data)
+      const allChildren = store.getAllChildren(1)
 
-  //     expect(allChildren).toHaveLength(2)
-  //     expect(allChildren).toContainEqual(data[1])
-  //     expect(allChildren).toContainEqual(data[2])
-  //   })
-  //   it('parent with multulayer descendants', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'Root' },
-  //       { id: 2, parent: 1, label: 'Child' },
-  //       { id: 3, parent: 2, label: 'Grandchild' },
-  //       { id: 4, parent: 1, label: 'Child 2' },
-  //     ]
-  //     const store = new TreeStore(data)
-  //     const allChildren = store.getAllChildren(1)
-  //     expect(allChildren).toHaveLength(3)
-  //     expect(allChildren).toContainEqual(data[1])
-  //     expect(allChildren).toContainEqual(data[2])
-  //     expect(allChildren).toContainEqual(data[3])
-  //   })
-  // })
+      expect(allChildren).toHaveLength(2)
+      expect(allChildren).toContainEqual(data[1])
+      expect(allChildren).toContainEqual(data[2])
+    })
+    it('parent with multulayer descendants', () => {
+      const data = [
+        { id: 1, parent: null, label: 'Root' },
+        { id: 2, parent: 1, label: 'Child' },
+        { id: 3, parent: 2, label: 'Grandchild' },
+        { id: 4, parent: 1, label: 'Child 2' },
+      ]
+      const store = new TreeStore(data)
+      const allChildren = store.getAllChildren(1)
+      expect(allChildren).toHaveLength(3)
+      expect(allChildren).toContainEqual(data[1])
+      expect(allChildren).toContainEqual(data[2])
+      expect(allChildren).toContainEqual(data[3])
+    })
+  })
 
-  // describe('getAllParents()', () => {
-  //   it('tree root with no parents', () => {
-  //     const data = [{ id: 1, parent: null, label: 'Root' }]
-  //     const store = new TreeStore(data)
+  describe('getAllParents()', () => {
+    it('tree root with no parents', () => {
+      const data = [{ id: 1, parent: null, label: 'Root' }]
+      const store = new TreeStore(data)
 
-  //     expect(store.getAllParents(1)).toEqual([data[0]])
-  //   })
-  //   it('child with root-parent', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'Root' },
-  //       { id: 2, parent: 1, label: 'Child' },
-  //     ]
-  //     const store = new TreeStore(data)
-  //     const parents = store.getAllParents(2)
+      expect(store.getAllParents(1)).toEqual([data[0]])
+    })
+    it('child with root-parent', () => {
+      const data = [
+        { id: 1, parent: null, label: 'Root' },
+        { id: 2, parent: 1, label: 'Child' },
+      ]
+      const store = new TreeStore(data)
+      const parents = store.getAllParents(2)
 
-  //     expect(parents).toHaveLength(2)
-  //     expect(parents).toEqual([data[1], data[0]])
-  //   })
-  //   it('child with line of ancestors', () => {
-  //     const data = [
-  //       { id: 1, parent: null, label: 'Root' },
-  //       { id: 2, parent: 1, label: 'Child' },
-  //       { id: 3, parent: 2, label: 'Grandchild' },
-  //     ]
-  //     const store = new TreeStore(data)
-  //     const parents = store.getAllParents(3)
+      expect(parents).toHaveLength(2)
+      expect(parents).toEqual([data[1], data[0]])
+    })
+    it('child with line of ancestors', () => {
+      const data = [
+        { id: 1, parent: null, label: 'Root' },
+        { id: 2, parent: 1, label: 'Child' },
+        { id: 3, parent: 2, label: 'Grandchild' },
+      ]
+      const store = new TreeStore(data)
+      const parents = store.getAllParents(3)
 
-  //     expect(parents).toHaveLength(3)
-  //     expect(parents).toEqual([data[2], data[1], data[0]])
-  //   })
-  // })
+      expect(parents).toHaveLength(3)
+      expect(parents).toEqual([data[2], data[1], data[0]])
+    })
+  })
 
   // describe('addItem()', () => {
   //   it('add item to empty tree', () => {

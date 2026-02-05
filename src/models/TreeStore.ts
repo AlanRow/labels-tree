@@ -51,6 +51,8 @@ export class TreeStore {
 
     // для начала пробегаемся по массиву, чтобы индексировать значения и собрать корни
     data.forEach((item) => {
+      // немного ломаем типизацию через as TreeNode,
+      // т. к. на стадии инициализации будет промежуточное "сломанное" состояние
       const node = {
         raw: { ...item },
         parentNode: null,
@@ -84,6 +86,11 @@ export class TreeStore {
     return node.raw.parent === null
   }
 
+  // private functions
+  #getNode(id: ItemId) {
+    return this.#idMap.get(id)
+  }
+
   getAll(): RawItem[] {
     const rawArray: RawItem[] = []
 
@@ -97,16 +104,46 @@ export class TreeStore {
   }
 
   getItem(id: ItemId): RawItem | undefined {
-    throw Error('Not implemented')
+    return this.#getNode(id)?.raw
   }
   getChildren(id: ItemId): RawItem[] {
-    throw Error('Not implemented')
+    const node = this.#getNode(id)
+    if (node === undefined) throw new Error(`Элемент <${id}> не найден`)
+
+    return node.childrenNodes.map((child) => child.raw)
   }
   getAllChildren(id: ItemId): RawItem[] {
-    throw Error('Not implemented')
+    // можно было бы реализовать через рекурсию, но есть риск падения на переполнении стека
+    // при глубине дерева больше 1000 с небольшим, так что идем поиском в глубину, т. к. в JS
+    // push и pop быстрее shift и unshift
+    const root = this.#getNode(id)
+    if (root === undefined) throw new Error(`Элемент <${id}> не найден`)
+
+    const result = []
+    const nodesToSearch = [...root.childrenNodes]
+
+    while (nodesToSearch.length > 0) {
+      const node = nodesToSearch.pop() as TreeNode // всегда есть, проверили цсловием цикла
+      result.push(node.raw)
+
+      nodesToSearch.push(...node.childrenNodes)
+    }
+
+    return result
   }
   getAllParents(id: ItemId): RawItem[] {
-    throw Error('Not implemented')
+    const node = this.#getNode(id)
+    if (node === undefined) throw new Error(`Элемент <${id}> не найден`)
+
+    const path = []
+    let currentNode: TreeNode | null = node
+
+    while (currentNode !== null) {
+      path.push(currentNode)
+      currentNode = currentNode.parentNode
+    }
+
+    return path.map((node) => node.raw)
   }
   addItem(item: RawItem): void {
     throw Error('Not implemented')
