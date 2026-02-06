@@ -1,6 +1,6 @@
 import { TreeStore } from '@/models'
 import type { ItemId, RawItem } from '@/models/tree-store/types'
-import type { ColDef } from 'ag-grid-enterprise'
+import type { ColDef, GetRowIdParams } from 'ag-grid-enterprise'
 import { computed, ref } from 'vue'
 
 import { v4 as uuidv4 } from 'uuid'
@@ -63,6 +63,10 @@ export const useModel = (initialData?: RawItem[]) => {
       .reverse()
   }
 
+  function getRowId(params: GetRowIdParams<RawItem>): string {
+    return params.data.id.toString()
+  }
+
   return {
     // строки и колонки
     rows,
@@ -77,6 +81,7 @@ export const useModel = (initialData?: RawItem[]) => {
     moveRowToParent,
     removeRow,
     // геттеры
+    getRowId,
     getDataPath,
   }
 }

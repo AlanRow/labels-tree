@@ -4,12 +4,13 @@ import App from './App.vue'
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
 import { AllEnterpriseModule, LicenseManager } from 'ag-grid-enterprise'
 
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+
 ModuleRegistry.registerModules([AllEnterpriseModule, AllCommunityModule])
 LicenseManager.setLicenseKey(import.meta.env.VUE_APP_AG_GRID_LICENSE_KEY)
 
 // global TODOs:
-// *) допилить изменяемость
-// *) оптимизировать кэширование
 // *) стилизовать таблицу под шаблон
 // *) экспортировать TreeStore
 // *) test coverage
@@ -17,7 +18,9 @@ LicenseManager.setLicenseKey(import.meta.env.VUE_APP_AG_GRID_LICENSE_KEY)
 // *) декомпозировать
 // *) вынести константы, если есть
 
-// Register all Community features
-ModuleRegistry.registerModules([AllCommunityModule])
+const app = createApp(App)
 
-createApp(App).mount('#app')
+// Element Plus для UI-стилизации
+app.use(ElementPlus)
+
+app.mount('#app')

@@ -21,6 +21,7 @@ export function getEditableColumns(onDelete: (id: ItemId) => void): ColDef[] {
     },
     {
       headerName: 'Действия',
+      // сделать компонентом
       cellRenderer: (params: any) => {
         const button = document.createElement('button')
         button.textContent = 'Удалить'
