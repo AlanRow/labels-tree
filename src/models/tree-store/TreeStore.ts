@@ -5,12 +5,9 @@ export default class TreeStore {
   // при этом за счет реализации JS она сама сохраняет
   // порядок добавления на двусвязных списках
   #idMap: Map<ItemId, TreeNode>
-  // список корней нужен для удобства перебора дерева
-  #roots: RootNode[]
 
   constructor(data: RawItem[]) {
     this.#idMap = new Map()
-    this.#roots = []
 
     // для начала пробегаемся по массиву, чтобы индексировать значения и собрать корни
     data.forEach((item) => {
@@ -23,10 +20,6 @@ export default class TreeStore {
       } as TreeNode
 
       this.#idMap.set(item.id, node)
-
-      if (TreeStore.checkNodeRoot(node)) {
-        this.#roots.push(node)
-      }
     })
 
     // теперь инциализируем ссылки внутри дерева
@@ -56,15 +49,6 @@ export default class TreeStore {
   #removeSubtreeRecursively(node: TreeNode) {
     this.#idMap.delete(node.raw.id)
     node.childrenNodes.forEach(this.#removeSubtreeRecursively.bind(this))
-  }
-  #removeFromRoots(node: RootNode) {
-    const rootIndex = this.#roots.indexOf(node)
-    this.#roots.splice(rootIndex, 1)
-  }
-
-  // TODO: probably is useless, delete it
-  getRoots(): RootRawItem[] {
-    return this.#roots.map((node) => node.raw)
   }
 
   // тут есть один проход по массиву и сложность O(n), но если хранить
@@ -135,7 +119,6 @@ export default class TreeStore {
         childrenNodes: [],
       }
 
-      this.#roots.push(node)
       this.#idMap.set(item.id, node)
     } else {
       const parentNode = this.#getNode(item.parent)
@@ -158,10 +141,7 @@ export default class TreeStore {
 
     const { parentNode } = node
 
-    if (parentNode === null) {
-      // вычищаем из списка рутов, если элемент был там
-      this.#removeFromRoots(node)
-    } else {
+    if (parentNode !== null) {
       // у поддеревьев нет смысла удалять, они и так пропадут из доступа
       // а garbage collector'у V8 это не помешает их удалить, так что без утечек
       const childrenIndex = parentNode.childrenNodes.indexOf(node)
@@ -186,10 +166,7 @@ export default class TreeStore {
     node.raw = updatedData
 
     if (oldData.parent !== newData.parent && newData.parent !== undefined) {
-      if (oldData.parent === null) {
-        // если это был корневой элемент, то надо его убрать из списка рутовых
-        this.#removeFromRoots(node as RootNode)
-      } else {
+      if (oldData.parent !== null) {
         // если был другой родитель, то надо удалить элемент из списка детей
         const parentChildren = (node as ChildNode).parentNode.childrenNodes
         const nodeIndex = parentChildren.indexOf(node as ChildNode)
@@ -197,8 +174,6 @@ export default class TreeStore {
       }
 
       if (newData.parent === null) {
-        // если это теперь корневой элемент, то надо добавить его в список рутовых
-        this.#roots.push(node as RootNode)
         node.parentNode = null
       } else {
         // если элемент получил нового родителя, то надо добавить его в список детей

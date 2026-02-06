@@ -2,52 +2,6 @@ import { describe, it, expect } from 'vitest'
 
 import { TreeStore } from '../../models'
 
-describe('getRoots()', () => {
-  it('no nodes tree', () => {
-    const store = new TreeStore([])
-
-    expect(store.getRoots()).toEqual([])
-  })
-  it('null edges tree', () => {
-    const data = [
-      { id: 1, parent: null, label: 'Root 1' },
-      { id: 2, parent: null, label: 'Root 2' },
-      { id: 3, parent: null, label: 'Root 3' },
-    ]
-    const store = new TreeStore(data)
-
-    expect(store.getRoots()).toEqual(data)
-  })
-  it('one root in tree', () => {
-    const data = [
-      { id: 1, parent: null, label: 'Root' },
-      { id: 2, parent: 1, label: 'Child 1' },
-      { id: 3, parent: 1, label: 'Child 2' },
-      { id: 4, parent: 2, label: 'Grandchild' },
-    ]
-    const store = new TreeStore(data)
-    const roots = store.getRoots()
-
-    expect(roots).toHaveLength(1)
-    expect(roots).toEqual([data[0]])
-  })
-  it('multiple roots in complex tree', () => {
-    const data = [
-      { id: 1, parent: null, label: 'Root 1' },
-      { id: 2, parent: 1, label: 'Child 1' },
-      { id: 3, parent: 2, label: 'Grandchild' },
-      { id: 4, parent: null, label: 'Root 2' },
-      { id: 5, parent: 4, label: 'Child 2' },
-      { id: 6, parent: null, label: 'Root 3' },
-    ]
-    const store = new TreeStore(data)
-    const roots = store.getRoots()
-
-    expect(roots).toHaveLength(3)
-    expect(roots).toEqual([data[0], data[3], data[5]])
-  })
-})
-
 describe('Constructor & getAll()', () => {
   it('create empty', () => {
     const store = new TreeStore([])
