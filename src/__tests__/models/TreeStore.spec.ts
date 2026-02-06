@@ -325,6 +325,18 @@ describe('updateItem()', () => {
       store.updateItem({ id: 999, label: 'Non-existent' })
     }).toThrow()
   })
+  it('failed on occurring cyclic structure', () => {
+    const data = [
+      { id: 1, parent: null, label: 'Root' },
+      { id: 2, parent: 1, label: 'Child' },
+      { id: 3, parent: 2, label: 'Grandchild' },
+    ]
+    const store = new TreeStore(data)
+
+    expect(() => {
+      store.updateItem({ id: 2, parent: 3 })
+    }).toThrow()
+  })
 })
 
 describe('Complex integration test', () => {

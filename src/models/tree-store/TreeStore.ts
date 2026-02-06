@@ -170,8 +170,6 @@ export default class TreeStore {
 
     this.#removeSubtreeRecursively(node)
   }
-  // TODO: check if there is cyclic move parent to child or himself
-  // TODO: don't move child to roots
   updateItem(newData: { id: ItemId } & Partial<RawItem>): void {
     const { id } = newData
 
@@ -203,10 +201,17 @@ export default class TreeStore {
         this.#roots.push(node as RootNode)
         node.parentNode = null
       } else {
-        // если элемент полчуил нового родителя, то надо добавить его в список детей
+        // если элемент получил нового родителя, то надо добавить его в список детей
         const newParent = this.#getNode(newData.parent)
         if (newParent === undefined) {
           throw new Error(`Новый родительский элемент <${newData.parent}> не обнаружен`)
+        }
+
+        // проверим на предмет циклов
+        let ancestor: TreeNode | null = newParent
+        while (ancestor !== null) {
+          if (ancestor.raw.id === oldData.id) throw new Error('Обнаружен цикл в новой структуре')
+          ancestor = ancestor.parentNode
         }
 
         ;(node as ChildNode).parentNode = newParent
