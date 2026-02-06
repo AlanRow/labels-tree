@@ -6,7 +6,20 @@ export default class TreeStore {
   // порядок добавления на двусвязных списках
   #idMap: Map<ItemId, TreeNode>
 
+  // храним кэшированный список ради оптимизаций,
+  // пересчитывая только при изменениях
+  #cachedArray: RawItem[]
+  // флаг для пересчета
+  #isCacheValid: boolean
+
   constructor(data: RawItem[]) {
+    // bнициализируем кэш, не очень безопасно
+    // (из-за возможности поменять внешний массив)
+    // но экономим один обход массива
+    this.#cachedArray = data
+    this.#isCacheValid = true
+
+    // инициализируем внутреннюю мапу
     this.#idMap = new Map()
 
     // для начала пробегаемся по массиву, чтобы индексировать значения и собрать корни
@@ -53,8 +66,9 @@ export default class TreeStore {
 
   // тут есть один проход по массиву и сложность O(n), но если хранить
   // оригинальный массив, то презко ухудшится удаление
-  // TODO: add array caching, reset it only on delete or update parent
   getAll(): RawItem[] {
+    if (this.#isCacheValid) return this.#cachedArray
+
     const rawArray: RawItem[] = []
 
     // можно было бы использовать деструктуризацию с map
@@ -63,7 +77,10 @@ export default class TreeStore {
       rawArray.push(node.raw)
     }
 
-    return rawArray
+    // восстанавливаем кэш
+    this.#isCacheValid = true
+    this.#cachedArray = rawArray
+    return this.#cachedArray
   }
 
   getItem(id: ItemId): RawItem | undefined {
@@ -94,7 +111,6 @@ export default class TreeStore {
 
     return result
   }
-  // TODO: is it make sense to add caching (and clear cache on update and delete)
   getAllParents(id: ItemId): RawItem[] {
     const node = this.#getNode(id)
     if (node === undefined) throw new Error(`Элемент <${id}> не найден`)
@@ -112,28 +128,29 @@ export default class TreeStore {
   addItem(item: RawItem): void {
     if (this.#idMap.has(item.id)) throw new Error(`Элемент <${item.id}> уже добавлен`)
 
+    let node: TreeNode
     if (item.parent === null) {
-      const node: RootNode = {
+      node = {
         raw: item,
         parentNode: null,
         childrenNodes: [],
       }
-
-      this.#idMap.set(item.id, node)
     } else {
       const parentNode = this.#getNode(item.parent)
 
       if (parentNode === undefined) throw new Error(`Родительский элемент ${item.parent} не найден`)
 
-      const node: ChildNode = {
+      node = {
         raw: item,
         parentNode,
         childrenNodes: [],
       }
 
       parentNode.childrenNodes.push(node)
-      this.#idMap.set(item.id, node)
     }
+
+    this.#idMap.set(item.id, node)
+    this.#cachedArray.push(node.raw)
   }
   removeItem(id: ItemId): void {
     const node = this.#getNode(id)
@@ -149,6 +166,7 @@ export default class TreeStore {
     }
 
     this.#removeSubtreeRecursively(node)
+    this.#isCacheValid = false
   }
   updateItem(newData: { id: ItemId } & Partial<RawItem>): void {
     const { id } = newData
@@ -157,13 +175,6 @@ export default class TreeStore {
     if (node === undefined) throw new Error(`Элемент <${id}> не обнаружен`)
 
     const oldData = node.raw
-
-    // обновляем по ссылке, так что везде отразится
-    const updatedData = {
-      ...oldData,
-      ...newData,
-    }
-    node.raw = updatedData
 
     if (oldData.parent !== newData.parent && newData.parent !== undefined) {
       if (oldData.parent !== null) {
@@ -193,5 +204,13 @@ export default class TreeStore {
         newParent.childrenNodes.push(node as ChildNode)
       }
     }
+
+    // обновляем по ссылке, так что везде отразится
+    const updatedData = {
+      ...oldData,
+      ...newData,
+    }
+    node.raw = updatedData
+    this.#isCacheValid = false
   }
 }
