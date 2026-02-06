@@ -1,6 +1,6 @@
 import { TreeStore } from '@/models'
 import type { ItemId, RawItem } from '@/models/tree-store/types'
-import type { ColDef, RowDragEndEvent } from 'ag-grid-enterprise'
+import type { ColDef } from 'ag-grid-enterprise'
 import { computed, ref } from 'vue'
 
 import { v4 as uuidv4 } from 'uuid'

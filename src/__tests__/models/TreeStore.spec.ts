@@ -299,6 +299,19 @@ describe('updateItem()', () => {
     expect(store.getItem(2)).toEqual({ id: 2, parent: 1, label: 'Another Root' })
     expect(store.getChildren(1)).toEqual([{ id: 2, parent: 1, label: 'Another Root' }])
   })
+  it('make item root', () => {
+    const data = [
+      { id: 1, parent: null, label: 'Root' },
+      { id: 2, parent: 1, label: 'Child' },
+      { id: 3, parent: 2, label: 'Grandchild' },
+    ]
+    const store = new TreeStore(data)
+    store.updateItem({ id: 3, parent: null })
+
+    expect(store.getItem(3)).toEqual({ id: 3, parent: null, label: 'Grandchild' })
+    expect(store.getAllParents(3)).toEqual([{ id: 3, parent: null, label: 'Grandchild' }])
+    expect(store.getChildren(2)).toEqual([])
+  })
   it('unchanged data', () => {
     const data = [{ id: 1, parent: null, label: 'Root' }]
     const store = new TreeStore(data)

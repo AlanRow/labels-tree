@@ -171,6 +171,7 @@ export default class TreeStore {
     this.#removeSubtreeRecursively(node)
   }
   // TODO: check if there is cyclic move parent to child or himself
+  // TODO: don't move child to roots
   updateItem(newData: { id: ItemId } & Partial<RawItem>): void {
     const { id } = newData
 
@@ -200,6 +201,7 @@ export default class TreeStore {
       if (newData.parent === null) {
         // если это теперь корневой элемент, то надо добавить его в список рутовых
         this.#roots.push(node as RootNode)
+        node.parentNode = null
       } else {
         // если элемент полчуил нового родителя, то надо добавить его в список детей
         const newParent = this.#getNode(newData.parent)
