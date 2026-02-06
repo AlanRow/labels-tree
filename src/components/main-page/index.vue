@@ -19,7 +19,6 @@ const {
   changeRowLabel,
 } = useModel(INITIAL_DATA)
 
-// TODO: починить добавление
 function onAddRow() {
   try {
     addRow()

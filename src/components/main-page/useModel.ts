@@ -7,8 +7,10 @@ import { v4 as uuidv4 } from 'uuid'
 import { getCategoryColum, getEditableColumns, getReadonlyColumns } from './columns'
 
 export const useModel = (initialData?: RawItem[]) => {
-  const tree = new TreeStore(initialData ?? [])
-  const rows = ref(tree.getAll())
+  // надо создавать rows до tree, чтобы сохранить реактивность при добавлении
+  // (возможно, повлияет на производительность)
+  const rows = ref(initialData ?? [])
+  const tree = new TreeStore(rows.value)
 
   const columns = computed<ColDef[]>(() =>
     isEditMode.value ? getEditableColumns(removeRow) : getReadonlyColumns(),
@@ -59,7 +61,7 @@ export const useModel = (initialData?: RawItem[]) => {
   function getDataPath(item: RawItem): string[] {
     return tree
       .getAllParents(item.id)
-      .map((parent) => parent.label)
+      .map((parent) => parent.id.toString())
       .reverse()
   }
 
