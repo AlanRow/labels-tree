@@ -31,3 +31,27 @@ npm run test:unit
 ```sh
 npm run test:unit
 ```
+
+### Экспорт TreeStore при помощи npm link
+
+Для локально добавления зависимости в другой проект, он должен использовать TypeScript. Можно сделать это слейдующими командами:
+
+1. Добавить зависимость:
+
+```sh
+npm link
+```
+
+2. Привязать в репозитории тестирования:
+
+```sh
+npm link labels-tree
+```
+
+3. Импортировать `TreeStore` в репозиторий для тестирования:
+
+```ts
+import { TreeStore } from 'labels-tree'
+
+const store = new TreeStore([])
+```
