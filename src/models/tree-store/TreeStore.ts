@@ -1,43 +1,6 @@
-type ItemId = number | string
+import type { ChildNode, ItemId, RawItem, RootNode, TreeNode } from './types'
 
-interface BaseRawItem {
-  id: ItemId
-  label: string
-}
-
-interface RootRawItem extends BaseRawItem {
-  parent: null
-}
-
-interface ChildRawItem extends BaseRawItem {
-  parent: ItemId
-}
-
-type RawItem = RootRawItem | ChildRawItem
-
-interface BaseTreeNode {
-  // чтобы легко списки чайлдов выводить
-  childrenNodes: ChildNode[]
-}
-
-interface RootNode extends BaseTreeNode {
-  raw: RootRawItem
-  parentNode: null
-}
-
-interface ChildNode extends BaseTreeNode {
-  // чтобы отдавать данные в оригинальном виде быстро
-  raw: ChildRawItem
-  // чтобы легко находить родителя
-  // можно было бы доставать через raw,
-  // но для этого придется каждый раз лезть в мапу
-  // а это в теории O(log n) и вообще дольше, чем ссылку хранить
-  parentNode: TreeNode
-}
-
-type TreeNode = RootNode | ChildNode
-
-export class TreeStore {
+export default class TreeStore {
   // мапа нам поможет быстро находить элементы по id
   // при этом за счет реализации JS она сама сохраняет
   // порядок добавления на двусвязных списках

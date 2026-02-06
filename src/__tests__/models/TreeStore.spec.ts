@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { TreeStore } from '../../models/TreeStore'
+import { TreeStore } from '../../models'
 
 describe('Constructor & getAll()', () => {
   it('create empty', () => {
