@@ -11,9 +11,7 @@ ModuleRegistry.registerModules([AllEnterpriseModule, AllCommunityModule])
 LicenseManager.setLicenseKey(import.meta.env.VUE_APP_AG_GRID_LICENSE_KEY)
 
 // global TODOs:
-// *) экспортировать TreeStore
 // *) test coverage
-// *) причесать public
 // *) декомпозировать
 // *) вынести константы, если есть
 
