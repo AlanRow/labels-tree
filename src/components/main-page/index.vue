@@ -4,7 +4,7 @@ import { INITIAL_DATA } from './const'
 import { useModel } from './useModel'
 import type { CellValueChangedEvent, RowDragEndEvent } from 'ag-grid-enterprise'
 import type { RawItem } from '@/models/tree-store/types'
-import { ElMessage } from 'element-plus'
+import { ElButton, ElMessage } from 'element-plus'
 
 const {
   rows,
@@ -19,6 +19,7 @@ const {
   changeRowLabel,
 } = useModel(INITIAL_DATA)
 
+// TODO: починить добавление
 function onAddRow() {
   try {
     addRow()
@@ -26,8 +27,6 @@ function onAddRow() {
     ElMessage.error('Ошибка при добавлении: ' + error)
   }
 }
-
-// TODO: вынести стили в классы
 
 function onRowDragEnd(event: RowDragEndEvent) {
   const target = event.overNode?.data as RawItem | undefined
@@ -52,15 +51,13 @@ function onRowEdit(event: CellValueChangedEvent<RawItem>) {
 </script>
 
 <template>
-  <div>
-    <div>
-      <span @click="toggleMode" style="cursor: pointer; text-decoration: underline; color: #007bff">
+  <div class="table-wrapper">
+    <div class="header-row">
+      <ElButton link type="primary" @click="toggleMode">
         {{ isEditMode ? 'Режим: редактирование' : 'Режим: просмотр' }}
-      </span>
+      </ElButton>
+      <ElButton v-if="isEditMode" type="success" @click="onAddRow">Добавить элемент</ElButton>
     </div>
-    <button v-if="isEditMode" @click="onAddRow">+ Добавить элемент</button>
-    <!-- TODO: Fix auto closing after tree change (may be it will be with optimizitions) -->
-    <!-- TODO: добавить инпут для ввода чиселок -->
     <ag-grid-vue
       treeData
       :rowNumbers="{ width: 80 }"
@@ -69,10 +66,38 @@ function onRowEdit(event: CellValueChangedEvent<RawItem>) {
       :columnDefs="columns"
       :getDataPath="getDataPath"
       :autoGroupColumnDef="groupColumn"
+      class="table-grid"
       @row-drag-end="onRowDragEnd"
       @cell-value-changed="onRowEdit"
-      style="height: 500px"
     >
     </ag-grid-vue>
   </div>
 </template>
+
+<style scoped>
+.table-wrapper {
+  padding: 2em;
+}
+.header-row {
+  margin-bottom: 1rem;
+}
+.table-grid {
+  height: 600px;
+}
+</style>
+
+<style lang="scss">
+/** реализовал кнопку руками, т. к. протаскивать через Ag Grid Element Plus довольно муторно */
+button.table-remove-button {
+  background-color: rgb(236, 102, 102);
+  color: white;
+  border: none;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgb(241, 169, 169);
+  }
+}
+</style>

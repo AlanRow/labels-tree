@@ -8,6 +8,8 @@ export function getReadonlyColumns(): ColDef[] {
     {
       headerName: 'Наименование',
       field: 'label',
+      flex: 3,
+      suppressHeaderMenuButton: true,
     },
   ]
 }
@@ -18,6 +20,8 @@ export function getEditableColumns(onDelete: (id: ItemId) => void): ColDef[] {
       headerName: 'Наименование',
       field: 'label',
       editable: true,
+      flex: 3,
+      suppressHeaderMenuButton: true,
     },
     {
       headerName: 'Действия',
@@ -25,12 +29,13 @@ export function getEditableColumns(onDelete: (id: ItemId) => void): ColDef[] {
       cellRenderer: (params: any) => {
         const button = document.createElement('button')
         button.textContent = 'Удалить'
-        button.style.padding = '4px 8px'
+        button.classList.add('table-remove-button')
         button.onclick = () => onDelete(params.data.id)
         return button
       },
-      width: 100,
+      width: 120,
       pinned: 'right' as const,
+      suppressHeaderMenuButton: true,
     },
   ]
 }
@@ -43,5 +48,7 @@ export function getCategoryColum(
     headerName: 'Категория',
     valueGetter,
     rowDrag: isEdit,
+    flex: 2,
+    suppressHeaderMenuButton: true,
   }
 }

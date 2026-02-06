@@ -150,7 +150,7 @@ export default class TreeStore {
     }
 
     this.#idMap.set(item.id, node)
-    this.#cachedArray.push(node.raw)
+    this.#cachedArray.splice(this.#cachedArray.length, 0, node.raw)
   }
   removeItem(id: ItemId): void {
     const node = this.#getNode(id)

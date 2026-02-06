@@ -36,7 +36,7 @@ export const useModel = (initialData?: RawItem[]) => {
       parent: null,
       label: 'Новый элемент',
     })
-    return tree.getAll()
+    updateRows()
   }
 
   function removeRow(id: ItemId) {

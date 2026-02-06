@@ -6,4 +6,8 @@ import { MainPage } from './components'
   <MainPage />
 </template>
 
-<style scoped></style>
+<style>
+body {
+  background-color: antiquewhite;
+}
+</style>
