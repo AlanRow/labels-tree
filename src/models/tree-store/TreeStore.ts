@@ -170,6 +170,7 @@ export default class TreeStore {
 
     this.#removeSubtreeRecursively(node)
   }
+  // TODO: check if there is cyclic move parent to child or himself
   updateItem(newData: { id: ItemId } & Partial<RawItem>): void {
     const { id } = newData
 
