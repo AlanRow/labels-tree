@@ -12,7 +12,6 @@ LicenseManager.setLicenseKey(import.meta.env.VUE_APP_AG_GRID_LICENSE_KEY)
 
 // global TODOs:
 // *) декомпозировать
-// *) вынести константы, если есть
 
 const app = createApp(App)
 

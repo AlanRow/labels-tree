@@ -5,6 +5,7 @@ import { computed, ref } from 'vue'
 
 import { v4 as uuidv4 } from 'uuid'
 import { getCategoryColum, getEditableColumns, getReadonlyColumns } from './columns'
+import { GROUP_LABEL, ITEM_LABEL, NEW_ITEM_LABEL } from './const'
 
 export const useModel = (initialData?: RawItem[]) => {
   // надо создавать rows до tree, чтобы сохранить реактивность при добавлении
@@ -18,7 +19,7 @@ export const useModel = (initialData?: RawItem[]) => {
 
   const groupColumn = computed(() =>
     getCategoryColum(isEditMode.value, (p) =>
-      (tree.getChildren(p.data?.id ?? 0).length > 0 ? 'Группа' : 'Элемент').toString(),
+      (tree.getChildren(p.data?.id ?? 0).length > 0 ? GROUP_LABEL : ITEM_LABEL).toString(),
     ),
   )
 
@@ -36,7 +37,7 @@ export const useModel = (initialData?: RawItem[]) => {
     tree.addItem({
       id: newId,
       parent: null,
-      label: 'Новый элемент',
+      label: NEW_ITEM_LABEL,
     })
     updateRows()
   }
