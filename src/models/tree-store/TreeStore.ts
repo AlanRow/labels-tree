@@ -150,7 +150,9 @@ export default class TreeStore {
     }
 
     this.#idMap.set(item.id, node)
-    this.#cachedArray.splice(this.#cachedArray.length, 0, node.raw)
+    // возникают ошибки реактивности в таблице, если просто
+    // добавлять элемент в кэш-массив, так что сбрасываю валидацию
+    this.#isCacheValid = false
   }
   removeItem(id: ItemId): void {
     const node = this.#getNode(id)
