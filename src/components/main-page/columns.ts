@@ -14,7 +14,7 @@ import {
 
 // здесь генерируются колонки для таблицы
 
-export function getReadonlyColumns(): ColDef[] {
+export function getViewColumns(): ColDef[] {
   return [
     {
       headerName: LABEL_COL_HEADER,

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 
 import {
-  getReadonlyColumns,
+  getViewColumns,
   getEditableColumns,
   getCategoryColum,
 } from '../../../components/main-page/columns'
@@ -10,7 +10,7 @@ import {
 // которые часто будут ломаться, но около-UI код иначе не проверяется
 describe('columns.ts', () => {
   it('returns readonly columns with correct shape', () => {
-    const cols = getReadonlyColumns()
+    const cols = getViewColumns()
 
     expect(cols).toHaveLength(1)
     expect(cols[0].headerName).toBe('Наименование')

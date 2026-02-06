@@ -4,7 +4,7 @@ import type { ColDef, GetRowIdParams } from 'ag-grid-enterprise'
 import { computed, ref } from 'vue'
 
 import { v4 as uuidv4 } from 'uuid'
-import { getCategoryColum, getEditableColumns, getReadonlyColumns } from './columns'
+import { getCategoryColum, getEditableColumns, getViewColumns } from './columns'
 import { GROUP_LABEL, ITEM_LABEL, NEW_ITEM_LABEL } from './const'
 
 export const useModel = (initialData?: RawItem[]) => {
@@ -14,7 +14,7 @@ export const useModel = (initialData?: RawItem[]) => {
   const tree = new TreeStore(rows.value)
 
   const columns = computed<ColDef[]>(() =>
-    isEditMode.value ? getEditableColumns(removeRow) : getReadonlyColumns(),
+    isEditMode.value ? getEditableColumns(removeRow) : getViewColumns(),
   )
 
   const groupColumn = computed(() =>

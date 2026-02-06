@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { AgGridVue } from 'ag-grid-vue3'
 import { INITIAL_DATA } from './const'
 import { useModel } from './useModel'
 import type { CellValueChangedEvent, RowDragEndEvent } from 'ag-grid-enterprise'
 import type { RawItem } from '@/models/tree-store/types'
-import { ElButton, ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus'
+import TableHeader from './TableHeader.vue'
+import TreeTable from './TreeTable.vue'
 
 const {
   rows,
@@ -51,37 +52,22 @@ function onRowEdit(event: CellValueChangedEvent<RawItem>) {
 
 <template>
   <div class="table-wrapper">
-    <div class="header-row">
-      <ElButton link type="primary" @click="toggleMode">
-        {{ isEditMode ? 'Режим: редактирование' : 'Режим: просмотр' }}
-      </ElButton>
-      <ElButton v-if="isEditMode" type="success" @click="onAddRow">Добавить элемент</ElButton>
-    </div>
-    <ag-grid-vue
-      treeData
-      :rowNumbers="{ width: 80 }"
-      :get-row-id="getRowId"
+    <TableHeader :isEditMode="isEditMode" @toggleMode="toggleMode" @addRow="onAddRow" />
+    <TreeTable
       :rowData="rows"
       :columnDefs="columns"
-      :getDataPath="getDataPath"
       :autoGroupColumnDef="groupColumn"
-      class="table-grid"
-      @row-drag-end="onRowDragEnd"
-      @cell-value-changed="onRowEdit"
-    >
-    </ag-grid-vue>
+      :getRowId="getRowId"
+      :getDataPath="getDataPath"
+      @rowDragEnd="onRowDragEnd"
+      @cellValueChanged="onRowEdit"
+    />
   </div>
 </template>
 
 <style scoped>
 .table-wrapper {
   padding: 2em;
-}
-.header-row {
-  margin-bottom: 1rem;
-}
-.table-grid {
-  height: 600px;
 }
 </style>
 
