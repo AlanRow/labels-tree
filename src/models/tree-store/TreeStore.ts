@@ -1,4 +1,4 @@
-import type { ChildNode, ItemId, RawItem, RootNode, TreeNode } from './types'
+import type { ChildNode, ItemId, RawItem, RootNode, RootRawItem, TreeNode } from './types'
 
 export default class TreeStore {
   // мапа нам поможет быстро находить элементы по id
@@ -60,6 +60,11 @@ export default class TreeStore {
   #removeFromRoots(node: RootNode) {
     const rootIndex = this.#roots.indexOf(node)
     this.#roots.splice(rootIndex, 1)
+  }
+
+  // TODO: write tests
+  getRoots(): RootRawItem[] {
+    return this.#roots.map((node) => node.raw)
   }
 
   // тут есть один проход по массиву и сложность O(n), но если хранить
