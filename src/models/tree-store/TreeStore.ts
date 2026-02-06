@@ -62,13 +62,14 @@ export default class TreeStore {
     this.#roots.splice(rootIndex, 1)
   }
 
-  // TODO: write tests
+  // TODO: probably is useless, delete it
   getRoots(): RootRawItem[] {
     return this.#roots.map((node) => node.raw)
   }
 
   // тут есть один проход по массиву и сложность O(n), но если хранить
   // оригинальный массив, то презко ухудшится удаление
+  // TODO: add array caching, reset it only on delete or update parent
   getAll(): RawItem[] {
     const rawArray: RawItem[] = []
 
@@ -109,6 +110,7 @@ export default class TreeStore {
 
     return result
   }
+  // TODO: is it make sense to add caching (and clear cache on update and delete)
   getAllParents(id: ItemId): RawItem[] {
     const node = this.#getNode(id)
     if (node === undefined) throw new Error(`Элемент <${id}> не найден`)
