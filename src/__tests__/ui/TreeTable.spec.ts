@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect } from 'vitest'
 
-import TreeTable from '../../../components/tree-table/index.vue'
+import TreeTable from '../../components/tree-table/index.vue'
 
 // по сути проверка простой обертки библиотечного компонента
 // так что все проверки чисто на проброс пропсов и эмитов

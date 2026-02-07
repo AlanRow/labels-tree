@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils'
 import { describe, it, expect } from 'vitest'
 
-import TreeHeader from '../../../components/tree-header/index.vue'
-import { EDIT_MODE_STATUS, VIEW_MODE_STATUS } from '../../../components/tree-header/const'
+import TreeHeader from '../../components/tree-header/index.vue'
+import { EDIT_MODE_STATUS, VIEW_MODE_STATUS } from '../../components/tree-header/const'
 
 const ElButtonStub = {
   name: 'ElButton',
