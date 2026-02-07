@@ -26,6 +26,16 @@ describe('Constructor & getAll()', () => {
 
     expect(store.getAll()).toEqual(data)
   })
+
+  it('failed on invalid tree (parent not found)', () => {
+    const data = [
+      { id: 1, parent: null, label: 'Root' },
+      { id: 2, parent: 3, label: 'Child' },
+    ]
+
+    expect(() => new TreeStore(data)).toThrow()
+  })
+
   // эту проверку закрыл во имя оптимизаций обходов
   // it('check tree is independent of origin array', () => {
   //   const data = [
@@ -105,6 +115,15 @@ describe('getChildren()', () => {
     expect(store.getChildren(1)).toEqual([data[1]])
     expect(store.getChildren(2)).toEqual([data[2]])
   })
+  it('no existing id', () => {
+    const data = [
+      { id: 1, parent: null, label: 'Root' },
+      { id: 2, parent: 1, label: 'Child' },
+    ]
+    const store = new TreeStore(data)
+
+    expect(() => store.getChildren(999)).toThrow()
+  })
 })
 
 describe('getAllChildren()', () => {
@@ -144,6 +163,15 @@ describe('getAllChildren()', () => {
     expect(allChildren).toContainEqual(data[2])
     expect(allChildren).toContainEqual(data[3])
   })
+  it('no existing id', () => {
+    const data = [
+      { id: 1, parent: null, label: 'Root' },
+      { id: 2, parent: 1, label: 'Child' },
+    ]
+    const store = new TreeStore(data)
+
+    expect(() => store.getAllChildren(999)).toThrow()
+  })
 })
 
 describe('getAllParents()', () => {
@@ -176,6 +204,15 @@ describe('getAllParents()', () => {
     expect(parents).toHaveLength(3)
     expect(parents).toEqual([data[2], data[1], data[0]])
   })
+  it('no existing id', () => {
+    const data = [
+      { id: 1, parent: null, label: 'Root' },
+      { id: 2, parent: 1, label: 'Child' },
+    ]
+    const store = new TreeStore(data)
+
+    expect(() => store.getAllParents(999)).toThrow()
+  })
 })
 
 describe('addItem()', () => {
@@ -200,6 +237,14 @@ describe('addItem()', () => {
 
     expect(() => {
       store.addItem({ id: 1, parent: null, label: 'Duplicate' })
+    }).toThrow()
+  })
+  it('no existing parent', () => {
+    const data = [{ id: 1, parent: null, label: 'Root' }]
+    const store = new TreeStore(data)
+
+    expect(() => {
+      store.addItem({ id: 2, parent: 999, label: 'Child' })
     }).toThrow()
   })
 })
@@ -290,6 +335,17 @@ describe('updateItem()', () => {
 
     expect(() => {
       store.updateItem({ id: 2, parent: 3 })
+    }).toThrow()
+  })
+  it('no existing new parent', () => {
+    const data = [
+      { id: 1, parent: null, label: 'Root' },
+      { id: 2, parent: 1, label: 'Child' },
+    ]
+    const store = new TreeStore(data)
+
+    expect(() => {
+      store.updateItem({ id: 2, parent: 999 })
     }).toThrow()
   })
 })
