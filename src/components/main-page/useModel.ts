@@ -4,22 +4,11 @@ import type { ColDef, GetRowIdParams } from 'ag-grid-enterprise'
 import { computed, ref } from 'vue'
 
 import { v4 as uuidv4 } from 'uuid'
-import { getCategoryColum, getEditableColumns, getViewColumns } from './columns'
-import { GROUP_LABEL, ITEM_LABEL, NEW_ITEM_LABEL } from './const'
+import { NEW_ITEM_LABEL } from './const'
 
 export const useModel = (initialData?: RawItem[]) => {
   const tree = new TreeStore(initialData ?? [])
   const rows = ref<RawItem[]>(tree.getAll())
-
-  const columns = computed<ColDef[]>(() =>
-    isEditMode.value ? getEditableColumns(removeRow) : getViewColumns(),
-  )
-
-  const groupColumn = computed<ColDef>(() =>
-    getCategoryColum(isEditMode.value, (p) =>
-      (tree.getChildren(p.data?.id ?? 0).length > 0 ? GROUP_LABEL : ITEM_LABEL).toString(),
-    ),
-  )
 
   const isEditMode = ref(false)
   function toggleMode() {
@@ -68,11 +57,13 @@ export const useModel = (initialData?: RawItem[]) => {
     return params.data.id.toString()
   }
 
+  function getChildren(item?: RawItem): RawItem[] {
+    return item ? tree.getChildren(item.id) : []
+  }
+
   return {
     // строки и колонки
     rows,
-    columns,
-    groupColumn,
     // режим редактирования / просмотра
     isEditMode,
     toggleMode,
@@ -84,5 +75,6 @@ export const useModel = (initialData?: RawItem[]) => {
     // геттеры
     getRowId,
     getDataPath,
+    getChildren,
   }
 }

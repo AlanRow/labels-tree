@@ -1,24 +1,36 @@
 <script setup lang="ts">
-import { INITIAL_DATA } from './const'
+import { GROUP_LABEL, INITIAL_DATA, ITEM_LABEL } from './const'
 import { useModel } from './useModel'
-import type { CellValueChangedEvent, RowDragEndEvent } from 'ag-grid-enterprise'
+import type { CellValueChangedEvent, ColDef, RowDragEndEvent } from 'ag-grid-enterprise'
 import type { RawItem } from '@/models/tree-store/types'
 import { ElMessage } from 'element-plus'
 import TableHeader from './TableHeader.vue'
 import TreeTable from './TreeTable.vue'
+import { computed } from 'vue'
+import { getCategoryColumn, getEditableColumns, getViewColumns } from './columns'
 
 const {
   rows,
-  columns,
-  groupColumn,
   isEditMode,
   toggleMode,
   getDataPath,
   getRowId,
   addRow,
+  removeRow,
   moveRowToParent,
   changeRowLabel,
+  getChildren,
 } = useModel(INITIAL_DATA)
+
+const columns = computed<ColDef[]>(() =>
+  isEditMode.value ? getEditableColumns(removeRow) : getViewColumns(),
+)
+
+const groupColumn = computed<ColDef>(() =>
+  getCategoryColumn(isEditMode.value, (p) =>
+    (getChildren(p.data).length > 0 ? GROUP_LABEL : ITEM_LABEL).toString(),
+  ),
+)
 
 function onAddRow() {
   try {

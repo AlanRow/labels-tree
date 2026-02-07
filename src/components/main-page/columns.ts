@@ -51,7 +51,7 @@ export function getEditableColumns(onDelete: (id: ItemId) => void): ColDef[] {
   ]
 }
 
-export function getCategoryColum(
+export function getCategoryColumn(
   isEdit: boolean,
   valueGetter: (p: { data?: RawItem }) => string,
 ): AutoGroupColumnDef {
