@@ -8,13 +8,13 @@ import TableHeader from './TableHeader.vue'
 import TreeTable from './TreeTable.vue'
 import { computed } from 'vue'
 import { getCategoryColumn, getEditableColumns, getViewColumns } from './columns'
+import { getRowId } from './utils'
 
 const {
   rows,
   isEditMode,
   toggleMode,
   getDataPath,
-  getRowId,
   addRow,
   removeRow,
   moveRowToParent,

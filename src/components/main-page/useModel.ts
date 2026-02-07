@@ -53,10 +53,6 @@ export const useModel = (initialData?: RawItem[]) => {
       .reverse()
   }
 
-  function getRowId(params: GetRowIdParams<RawItem>): string {
-    return params.data.id.toString()
-  }
-
   function getChildren(item?: RawItem): RawItem[] {
     return item ? tree.getChildren(item.id) : []
   }
@@ -73,7 +69,6 @@ export const useModel = (initialData?: RawItem[]) => {
     moveRowToParent,
     removeRow,
     // геттеры
-    getRowId,
     getDataPath,
     getChildren,
   }
