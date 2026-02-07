@@ -22,8 +22,22 @@ const {
   getChildren,
 } = useModel(INITIAL_DATA)
 
+const actionsRenderer = (params: any) => {
+  const button = document.createElement('button')
+  button.textContent = ACTIONS_BUTTON_TEXT
+  button.classList.add('table-remove-button')
+  button.onclick = () => {
+    try {
+      removeRow(params.data.id)
+    } catch (error) {
+      ElMessage.error('Ошибка при удалении: ' + error)
+    }
+  }
+  return button
+}
+
 const columns = computed<ColDef[]>(() =>
-  isEditMode.value ? getEditableColumns(removeRow) : getViewColumns(),
+  isEditMode.value ? getEditableColumns(actionsRenderer) : getViewColumns(),
 )
 
 const groupColumn = computed<ColDef>(() =>

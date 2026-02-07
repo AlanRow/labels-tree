@@ -25,7 +25,7 @@ export function getViewColumns(): ColDef[] {
   ]
 }
 
-export function getEditableColumns(onDelete: (id: ItemId) => void): ColDef[] {
+export function getEditableColumns(actionsCellRenderer: ColDef['cellRenderer']): ColDef[] {
   return [
     {
       headerName: LABEL_COL_HEADER,
@@ -36,14 +36,7 @@ export function getEditableColumns(onDelete: (id: ItemId) => void): ColDef[] {
     },
     {
       headerName: ACTIONS_COL_HEADER,
-      // сделать компонентом
-      cellRenderer: (params: any) => {
-        const button = document.createElement('button')
-        button.textContent = ACTIONS_BUTTON_TEXT
-        button.classList.add('table-remove-button')
-        button.onclick = () => onDelete(params.data.id)
-        return button
-      },
+      cellRenderer: actionsCellRenderer,
       width: ACTIONS_COLUMN_WIDTH,
       pinned: ACTIONS_COLUMN_PINNED,
       suppressHeaderMenuButton: true,
