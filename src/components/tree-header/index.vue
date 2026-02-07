@@ -11,17 +11,17 @@ withDefaults(
 )
 
 const emit = defineEmits<{
-  toggleMode: []
-  addRow: []
+  (e: 'toggleMode'): void
+  (e: 'addRow'): void
 }>()
 </script>
 
 <template>
   <div class="header-row">
-    <ElButton link type="primary" @click="emit('toggleMode')">
+    <ElButton link type="primary" data-qa="mode-button" @click="emit('toggleMode')">
       {{ isEditMode ? EDIT_MODE_STATUS : VIEW_MODE_STATUS }}
     </ElButton>
-    <ElButton v-if="isEditMode" type="success" @click="emit('addRow')">{{
+    <ElButton v-if="isEditMode" type="success" data-qa="add-button" @click="emit('addRow')">{{
       ADD_ROW_BUTTON_TEXT
     }}</ElButton>
   </div>
