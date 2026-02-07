@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { MainPage } from './components'
+import { TreeManager } from './components'
 </script>
 
 <template>
-  <MainPage />
+  <TreeManager />
 </template>
 
 <style>

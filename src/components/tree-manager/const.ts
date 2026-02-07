@@ -12,8 +12,6 @@ export const INITIAL_DATA: RawItem[] = [
 ]
 
 // настройки таблицы
-export const NUMBER_COL_WIDTH = 80
-
 export const LABEL_COL_HEADER = 'Наименование'
 export const LABEL_COL_FIELD = 'label'
 export const LABEL_COL_FLEX = 3
@@ -30,8 +28,3 @@ export const CATEGORY_HEADER = 'Категория'
 export const GROUP_LABEL = 'Группа'
 export const ITEM_LABEL = 'Элемент'
 export const NEW_ITEM_LABEL = 'Новый элемент'
-
-// другие элементы
-export const ADD_ROW_BUTTON_TEXT = 'Добавить элемент'
-export const EDIT_MODE_STATUS = 'Режим: редактирование'
-export const VIEW_MODE_STATUS = 'Режим: просмотр'

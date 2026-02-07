@@ -1,19 +1,28 @@
 <script setup lang="ts">
 import { AgGridVue } from 'ag-grid-vue3'
-import type { CellValueChangedEvent, RowDragEndEvent, ColDef } from 'ag-grid-enterprise'
+import type {
+  CellValueChangedEvent,
+  RowDragEndEvent,
+  ColDef,
+  AutoGroupColumnDef,
+} from 'ag-grid-enterprise'
+
 import type { RawItem } from '@/models/tree-store/types'
-import type { AutoGroupColumnDef } from 'ag-grid-enterprise'
+
 import { NUMBER_COL_WIDTH } from './const'
 
-interface Props {
-  rowData: RawItem[]
-  columnDefs: ColDef[]
-  autoGroupColumnDef: AutoGroupColumnDef
-  getRowId: (params: any) => string
-  getDataPath: (item: RawItem) => string[]
-}
+// обертка над ag-grid таблицей для отображения дерева
 
-withDefaults(defineProps<Props>(), {})
+withDefaults(
+  defineProps<{
+    rowData: RawItem[]
+    columnDefs: ColDef[]
+    autoGroupColumnDef: AutoGroupColumnDef
+    getRowId: (params: any) => string
+    getDataPath: (item: RawItem) => string[]
+  }>(),
+  {},
+)
 
 const emit = defineEmits<{
   (e: 'rowDragEnd', event: RowDragEndEvent): void

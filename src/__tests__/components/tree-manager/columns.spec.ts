@@ -4,9 +4,9 @@ import {
   getViewColumns,
   getEditableColumns,
   getCategoryColumn,
-} from '../../../components/main-page/columns'
+} from '../../../components/tree-manager/columns'
 
-import { ACTIONS_COL_HEADER } from '../../../components/main-page/const'
+import { ACTIONS_COL_HEADER } from '../../../components/tree-manager/const'
 
 // проверки максимально примитивные, но иначе онибудут ломаться при
 // любом изменении контента, а так мы проверяем только ключевые моменты

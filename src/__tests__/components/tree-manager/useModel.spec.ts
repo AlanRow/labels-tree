@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { useModel } from '../../../components/main-page/useModel'
+import { useModel } from '../../../components/tree-manager/useModel'
 
 describe('Get and change rows', () => {
   it('initializes with empty', () => {

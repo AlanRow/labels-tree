@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { ElButton } from 'element-plus'
+
 import { ADD_ROW_BUTTON_TEXT, EDIT_MODE_STATUS, VIEW_MODE_STATUS } from './const'
 
-interface Props {
-  isEditMode: boolean
-}
-
-withDefaults(defineProps<Props>(), {})
+withDefaults(
+  defineProps<{
+    isEditMode: boolean
+  }>(),
+  {},
+)
 
 const emit = defineEmits<{
   toggleMode: []

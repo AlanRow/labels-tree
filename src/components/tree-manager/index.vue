@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { ACTIONS_BUTTON_TEXT, GROUP_LABEL, INITIAL_DATA, ITEM_LABEL } from './const'
-import { useModel } from './useModel'
-import type { CellValueChangedEvent, ColDef, RowDragEndEvent } from 'ag-grid-enterprise'
-import type { RawItem } from '@/models/tree-store/types'
 import { ElMessage } from 'element-plus'
-import TableHeader from './TableHeader.vue'
-import TreeTable from './TreeTable.vue'
 import { computed } from 'vue'
+import type { CellValueChangedEvent, ColDef, RowDragEndEvent } from 'ag-grid-enterprise'
+
+import type { RawItem } from '@/models/tree-store/types'
+
+import { ACTIONS_BUTTON_TEXT, GROUP_LABEL, INITIAL_DATA, ITEM_LABEL } from './const'
 import { getCategoryColumn, getEditableColumns, getViewColumns } from './columns'
 import { getRowId } from './utils'
+import { useModel } from './useModel'
+
+import TableHeader from '../tree-header'
+import TreeTable from '../tree-table'
+
+// основной менеджер всего дерева
 
 const {
   rows,

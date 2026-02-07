@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { getRowId } from '../../../components/main-page/utils'
+import { getRowId } from '../../../components/tree-manager/utils'
 
 describe('getRowId', () => {
   it('simple string id', () => {
