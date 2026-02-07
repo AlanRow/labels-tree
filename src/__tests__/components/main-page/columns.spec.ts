@@ -3,43 +3,33 @@ import { describe, it, expect, vi } from 'vitest'
 import {
   getViewColumns,
   getEditableColumns,
-  getCategoryColum,
+  getCategoryColumn,
 } from '../../../components/main-page/columns'
 
-// скорее сомнительно отношусь к подобным "интерфейсным" проверкам,
-// которые часто будут ломаться, но около-UI код иначе не проверяется
-describe('columns.ts', () => {
-  it('returns readonly columns with correct shape', () => {
-    const cols = getViewColumns()
+import { ACTIONS_COL_HEADER } from '../../../components/main-page/const'
 
-    expect(cols).toHaveLength(1)
-    expect(cols[0].headerName).toBe('Наименование')
-    expect(cols[0].field).toBe('label')
-    expect(cols[0].flex).toBe(3)
+// проверки максимально примитивные, но иначе онибудут ломаться при
+// любом изменении контента, а так мы проверяем только ключевые моменты
+describe('columns content', () => {
+  it('returns readonly columns array, it more than 0', () => {
+    const cols = getViewColumns()
+    expect(Array.isArray(cols)).toBe(true)
+    expect(cols.length).toBeGreaterThan(0)
   })
 
-  it('editable columns include action cellRenderer that calls onDelete', () => {
-    const onDelete = vi.fn()
-    const cols = getEditableColumns(onDelete)
+  it('editable columns has actions with cellRenderer', () => {
+    const cellRenderer = vi.fn()
+    const cols = getEditableColumns(cellRenderer)
 
-    const actionCol: any = cols.find((c) => c.headerName === 'Действия')
+    const actionCol: any = cols.find((c) => c.headerName === ACTIONS_COL_HEADER)
     expect(actionCol).toBeTruthy()
-
-    const params = { data: { id: 'abc' } }
-    const button = actionCol.cellRenderer(params) as HTMLButtonElement
-
-    expect(button).toBeInstanceOf(HTMLButtonElement)
-    expect(button.textContent).toBe('Удалить')
-    expect(button.classList.contains('table-remove-button')).toBe(true)
-
-    button.onclick && button.onclick(new PointerEvent('click'))
-    expect(onDelete).toHaveBeenCalledWith('abc')
+    expect(actionCol.cellRenderer).toBe(cellRenderer)
   })
 
   it('category column forwards valueGetter and respects isEdit rowDrag', () => {
     const valueGetter = (p: any) => (p.data && p.data.flag ? 'YES' : 'NO')
-    const colEdit = getCategoryColum(true, valueGetter) as any
-    const colView = getCategoryColum(false, valueGetter) as any
+    const colEdit = getCategoryColumn(true, valueGetter) as any
+    const colView = getCategoryColumn(false, valueGetter) as any
 
     expect(colEdit.rowDrag).toBe(true)
     expect(colView.rowDrag).toBe(false)

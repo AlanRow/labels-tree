@@ -8,6 +8,7 @@ describe('Constructor & getAll()', () => {
 
     expect(store.getAll()).toEqual([])
   })
+
   it('create with data', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -17,6 +18,7 @@ describe('Constructor & getAll()', () => {
 
     expect(store.getAll()).toEqual(data)
   })
+
   it('check order saving on unordeqred input', () => {
     const data = [
       { id: 2, parent: 1, label: 'Child' },
@@ -57,12 +59,14 @@ describe('getItem()', () => {
 
     expect(store.getItem(1)).toEqual(data[0])
   })
+
   it('string id', () => {
     const data = [{ id: 'root', parent: null, label: 'Root' }]
     const store = new TreeStore(data)
 
     expect(store.getItem('root')).toEqual(data[0])
   })
+
   it('ids "1" and 1', () => {
     const data = [
       { id: 1, parent: null, label: 'number' },
@@ -73,6 +77,7 @@ describe('getItem()', () => {
     expect(store.getItem(1)?.label).toBe('number')
     expect(store.getItem('1')?.label).toBe('string')
   })
+
   it('no existing id', () => {
     const data = [{ id: 1, parent: null, label: 'Root' }]
     const store = new TreeStore(data)
@@ -91,6 +96,7 @@ describe('getChildren()', () => {
 
     expect(store.getChildren(2).length).toBe(0)
   })
+
   it('parent with children', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -104,6 +110,7 @@ describe('getChildren()', () => {
     expect(children).toContainEqual(data[1])
     expect(children).toContainEqual(data[2])
   })
+
   it('parent with multulayer descendants', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -115,6 +122,7 @@ describe('getChildren()', () => {
     expect(store.getChildren(1)).toEqual([data[1]])
     expect(store.getChildren(2)).toEqual([data[2]])
   })
+
   it('no existing id', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -136,6 +144,7 @@ describe('getAllChildren()', () => {
 
     expect(store.getAllChildren(2)).toEqual([])
   })
+
   it('parent with directly children', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -149,6 +158,7 @@ describe('getAllChildren()', () => {
     expect(allChildren).toContainEqual(data[1])
     expect(allChildren).toContainEqual(data[2])
   })
+
   it('parent with multulayer descendants', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -163,6 +173,7 @@ describe('getAllChildren()', () => {
     expect(allChildren).toContainEqual(data[2])
     expect(allChildren).toContainEqual(data[3])
   })
+
   it('no existing id', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -181,6 +192,7 @@ describe('getAllParents()', () => {
 
     expect(store.getAllParents(1)).toEqual([data[0]])
   })
+
   it('child with root-parent', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -192,6 +204,7 @@ describe('getAllParents()', () => {
     expect(parents).toHaveLength(2)
     expect(parents).toEqual([data[1], data[0]])
   })
+
   it('child with line of ancestors', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -204,6 +217,7 @@ describe('getAllParents()', () => {
     expect(parents).toHaveLength(3)
     expect(parents).toEqual([data[2], data[1], data[0]])
   })
+
   it('no existing id', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -223,6 +237,7 @@ describe('addItem()', () => {
     expect(store.getItem(1)).toEqual({ id: 1, parent: null, label: 'Root' })
     expect(store.getAll()).toHaveLength(1)
   })
+
   it('add item to no-empty tree', () => {
     const data = [{ id: 1, parent: null, label: 'Root' }]
     const store = new TreeStore(data)
@@ -231,6 +246,7 @@ describe('addItem()', () => {
     expect(store.getItem(2)).toEqual({ id: 2, parent: 1, label: 'Child' })
     expect(store.getAll()).toHaveLength(2)
   })
+
   it('failed on add existing id', () => {
     const data = [{ id: 1, parent: null, label: 'Root' }]
     const store = new TreeStore(data)
@@ -239,6 +255,7 @@ describe('addItem()', () => {
       store.addItem({ id: 1, parent: null, label: 'Duplicate' })
     }).toThrow()
   })
+
   it('no existing parent', () => {
     const data = [{ id: 1, parent: null, label: 'Root' }]
     const store = new TreeStore(data)
@@ -258,6 +275,7 @@ describe('removeItem()', () => {
     expect(store.getItem(1)).toBeUndefined()
     expect(store.getAll()).toHaveLength(0)
   })
+
   it('remove node with subtreee', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -271,6 +289,7 @@ describe('removeItem()', () => {
     expect(store.getItem(3)).toBeUndefined()
     expect(store.getAll()).toHaveLength(1)
   })
+
   it('failed onremove non-existing item', () => {
     const store = new TreeStore([])
 
@@ -288,6 +307,7 @@ describe('updateItem()', () => {
 
     expect(store.getItem(1)).toEqual({ id: 1, parent: null, label: 'Updated Root' })
   })
+
   it('update item parent', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -299,6 +319,7 @@ describe('updateItem()', () => {
     expect(store.getItem(2)).toEqual({ id: 2, parent: 1, label: 'Another Root' })
     expect(store.getChildren(1)).toEqual([{ id: 2, parent: 1, label: 'Another Root' }])
   })
+
   it('make item root', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -312,12 +333,14 @@ describe('updateItem()', () => {
     expect(store.getAllParents(3)).toEqual([{ id: 3, parent: null, label: 'Grandchild' }])
     expect(store.getChildren(2)).toEqual([])
   })
+
   it('unchanged data', () => {
     const data = [{ id: 1, parent: null, label: 'Root' }]
     const store = new TreeStore(data)
     store.updateItem({ id: 1, parent: null, label: 'Root' })
     expect(store.getItem(1)).toEqual({ id: 1, parent: null, label: 'Root' })
   })
+
   it('failed on update non-existing item', () => {
     const store = new TreeStore([])
 
@@ -325,6 +348,7 @@ describe('updateItem()', () => {
       store.updateItem({ id: 999, label: 'Non-existent' })
     }).toThrow()
   })
+
   it('failed on occurring cyclic structure', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
@@ -337,6 +361,7 @@ describe('updateItem()', () => {
       store.updateItem({ id: 2, parent: 3 })
     }).toThrow()
   })
+
   it('no existing new parent', () => {
     const data = [
       { id: 1, parent: null, label: 'Root' },
