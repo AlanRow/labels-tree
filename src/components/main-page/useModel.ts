@@ -8,16 +8,14 @@ import { getCategoryColum, getEditableColumns, getViewColumns } from './columns'
 import { GROUP_LABEL, ITEM_LABEL, NEW_ITEM_LABEL } from './const'
 
 export const useModel = (initialData?: RawItem[]) => {
-  // надо создавать rows до tree, чтобы сохранить реактивность при добавлении
-  // (возможно, повлияет на производительность)
-  const rows = ref(initialData ?? [])
-  const tree = new TreeStore(rows.value)
+  const tree = new TreeStore(initialData ?? [])
+  const rows = ref<RawItem[]>(tree.getAll())
 
   const columns = computed<ColDef[]>(() =>
     isEditMode.value ? getEditableColumns(removeRow) : getViewColumns(),
   )
 
-  const groupColumn = computed(() =>
+  const groupColumn = computed<ColDef>(() =>
     getCategoryColum(isEditMode.value, (p) =>
       (tree.getChildren(p.data?.id ?? 0).length > 0 ? GROUP_LABEL : ITEM_LABEL).toString(),
     ),
