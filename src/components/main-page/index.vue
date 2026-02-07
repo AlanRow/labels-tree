@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { GROUP_LABEL, INITIAL_DATA, ITEM_LABEL } from './const'
+import { ACTIONS_BUTTON_TEXT, GROUP_LABEL, INITIAL_DATA, ITEM_LABEL } from './const'
 import { useModel } from './useModel'
 import type { CellValueChangedEvent, ColDef, RowDragEndEvent } from 'ag-grid-enterprise'
 import type { RawItem } from '@/models/tree-store/types'

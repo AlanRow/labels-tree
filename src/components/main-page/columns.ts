@@ -1,11 +1,10 @@
-import type { ItemId, RawItem } from '@/models/tree-store/types'
+import type { RawItem } from '@/models/tree-store/types'
 import type { AutoGroupColumnDef, ColDef } from 'ag-grid-enterprise'
 import {
   LABEL_COL_HEADER,
   LABEL_COL_FIELD,
   LABEL_COL_FLEX,
   ACTIONS_COL_HEADER,
-  ACTIONS_BUTTON_TEXT,
   ACTIONS_COLUMN_WIDTH,
   ACTIONS_COLUMN_PINNED,
   CATEGORY_HEADER,
