@@ -12,6 +12,13 @@ export default class TreeStore {
   // флаг для пересчета
   #isCacheValid: boolean
 
+  /**
+   * Создает новое дерево из массива элементов.
+   *
+   * @param data - Массив элементов дерева. Элементы должны образовывать корректную иерархию
+   * @throws {Error} Если в данных не найден родительский элемент одного из узлов
+   * @complexity O(n) - один проход по массиву плюс построение связей
+   */
   constructor(data: RawItem[]) {
     // инициализируем кэш, не очень безопасно
     // (из-за возможности поменять внешний массив)
@@ -51,6 +58,13 @@ export default class TreeStore {
     })
   }
 
+  /**
+   * Проверяет является ли узел корневым элементом дерева.
+   *
+   * @param node - Узел для проверки
+   * @returns true если узел корневой (parent === null), иначе false
+   * @complexity O(1) - только проверка свойства
+   */
   static checkNodeRoot(node: TreeNode): node is RootNode {
     return node.raw.parent === null
   }
@@ -64,8 +78,13 @@ export default class TreeStore {
     node.childrenNodes.forEach(this.#removeSubtreeRecursively.bind(this))
   }
 
-  // тут есть один проход по массиву и сложность O(n), но если хранить
-  // оригинальный массив, то презко ухудшится удаление
+  /**
+   * Возвращает массив всех элементов дерева.
+   *
+   * Результат кэшируется и обновляется только при изменениях дерева.
+   * @returns Копия всех элементов в порядке добавления в Map
+   * @complexity O(n) - линейная при пересчете кэша, O(1) при валидном кэше
+   */
   getAll(): RawItem[] {
     if (this.#isCacheValid) return this.#cachedArray
 
@@ -83,15 +102,40 @@ export default class TreeStore {
     return this.#cachedArray
   }
 
+  /**
+   * Получает элемент по его уникальному ID.
+   *
+   * @param id - Уникальный идентификатор элемента
+   * @returns Элемент или undefined если не найден
+   * @complexity O(1) - быстрый поиск по Map
+   */
   getItem(id: ItemId): RawItem | undefined {
     return this.#getNode(id)?.raw
   }
+  /**
+   * Получает мгновенных потомков элемента (прямые дети, не глубже).
+   *
+   * @param id - ID родительского элемента
+   * @returns Массив прямых потомков
+   * @throws {Error} Если элемент с таким ID не найден
+   * @complexity O(k) где k - количество прямых потомков
+   */
   getChildren(id: ItemId): RawItem[] {
     const node = this.#getNode(id)
     if (node === undefined) throw new Error(`Элемент <${id}> не найден`)
 
     return node.childrenNodes.map((child) => child.raw)
   }
+  /**
+   * Получает всех потомков элемента рекурсивно (весь поддерево).
+   *
+   * Использует итеративный DFS вместо рекурсии для защиты от переполнения стека
+   * на глубоких деревьях (глубина > 1000).
+   * @param id - ID элемента, потомков которого нужно получить
+   * @returns Массив всех потомков из поддерева
+   * @throws {Error} Если элемент с таким ID не найден
+   * @complexity O(m) где m - количество всех потомков (размер поддерева)
+   */
   getAllChildren(id: ItemId): RawItem[] {
     // можно было бы реализовать через рекурсию, но есть риск падения на переполнении стека
     // при глубине дерева больше 1000 с небольшим, так что идем поиском в глубину, т. к. в JS
@@ -111,6 +155,15 @@ export default class TreeStore {
 
     return result
   }
+  /**
+   * Получает всех предков элемента (путь до корня дерева).
+   *
+   * Массив начинается с самого элемента и заканчивается корневым элементом.
+   * @param id - ID элемента
+   * @returns Массив предков от элемента до корня, включая сам элемент
+   * @throws {Error} Если элемент с таким ID не найден
+   * @complexity O(d) где d - глубина элемента в дереве
+   */
   getAllParents(id: ItemId): RawItem[] {
     const node = this.#getNode(id)
     if (node === undefined) throw new Error(`Элемент <${id}> не найден`)
@@ -125,6 +178,16 @@ export default class TreeStore {
 
     return path.map((node) => node.raw)
   }
+  /**
+   * Добавляет новый элемент в дерево.
+   *
+   * Если элемент имеет родителя, он связывается с существующим родителем.
+   * Если это корневой элемент (parent === null), добавляется как независимое дерево.
+   * @param item - Элемент с корректным ID и указанием родителя
+   * @throws {Error} Если элемент с таким ID уже существует
+   * @throws {Error} Если указан родитель, но он не найден в дереве
+   * @complexity O(1) - добавление в Map и в массив детей родителя
+   */
   addItem(item: RawItem): void {
     if (this.#idMap.has(item.id)) throw new Error(`Элемент <${item.id}> уже добавлен`)
 
@@ -154,6 +217,15 @@ export default class TreeStore {
     // добавлять элемент в кэш-массив, так что сбрасываю валидацию
     this.#isCacheValid = false
   }
+  /**
+   * Удаляет элемент и всех его потомков из дерева.
+   *
+   * Если элемент имеет родителя, он удаляется из списка детей родителя.
+   * Все потомки удаляются из Map и становятся недоступны.
+   * @param id - ID элемента для удаления
+   * @throws {Error} Если элемент с таким ID не найден
+   * @complexity O(n) где n - количество элементов в удаляемом поддереве
+   */
   removeItem(id: ItemId): void {
     const node = this.#getNode(id)
     if (node === undefined) throw new Error(`Элемент <${id}> не обнаружен`)
@@ -170,6 +242,17 @@ export default class TreeStore {
     this.#removeSubtreeRecursively(node)
     this.#isCacheValid = false
   }
+  /**
+   * Обновляет данные элемента, включая возможное изменение родителя.
+   *
+   * При изменении родителя проверяет циклы и корректирует связи в дереве.
+   * Обновления применяются по ссылке, отражаясь везде где используется этот элемент.
+   * @param newData - Объект с ID и частичными данными для обновления
+   * @throws {Error} Если элемент не найден
+   * @throws {Error} Если новый родитель не найден
+   * @throws {Error} Если изменение родителя создает цикл
+   * @complexity O(d) где d - глубина нового родителя при проверке на циклы
+   */
   updateItem(newData: { id: ItemId } & Partial<RawItem>): void {
     const { id } = newData
 
