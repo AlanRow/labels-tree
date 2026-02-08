@@ -7,7 +7,7 @@ withDefaults(
   defineProps<{
     isEditMode: boolean
   }>(),
-  {},
+  { isEditMode: false },
 )
 
 const emit = defineEmits<{

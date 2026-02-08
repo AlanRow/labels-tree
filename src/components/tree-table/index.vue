@@ -13,16 +13,13 @@ import { NUMBER_COL_WIDTH } from './const'
 
 // обертка над ag-grid таблицей для отображения дерева
 
-withDefaults(
-  defineProps<{
-    rowData: RawItem[]
-    columnDefs: ColDef[]
-    autoGroupColumnDef: AutoGroupColumnDef
-    getRowId: (params: any) => string
-    getDataPath: (item: RawItem) => string[]
-  }>(),
-  {},
-)
+defineProps<{
+  rowData: RawItem[]
+  columnDefs: ColDef[]
+  autoGroupColumnDef: AutoGroupColumnDef
+  getRowId: (params: any) => string
+  getDataPath: (item: RawItem) => string[]
+}>()
 
 const emit = defineEmits<{
   (e: 'rowDragEnd', event: RowDragEndEvent): void
@@ -31,7 +28,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <ag-grid-vue
+  <AgGridVue
     treeData
     :rowNumbers="{ width: NUMBER_COL_WIDTH }"
     :get-row-id="getRowId"
