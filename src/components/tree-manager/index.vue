@@ -10,7 +10,7 @@ import { getCategoryColumn, getEditableColumns, getViewColumns } from './columns
 import { getRowId } from './utils'
 import { useModel } from './useModel'
 
-import TableHeader from '../tree-header'
+import TreeHeader from '../tree-header'
 import TreeTable from '../tree-table'
 
 // основной менеджер всего дерева
@@ -83,7 +83,7 @@ function onRowEdit(event: CellValueChangedEvent<RawItem>) {
 
 <template>
   <div class="table-wrapper">
-    <TableHeader :isEditMode="isEditMode" @toggleMode="toggleMode" @addRow="onAddRow" />
+    <TreeHeader :isEditMode="isEditMode" @toggleMode="toggleMode" @addRow="onAddRow" />
     <TreeTable
       :rowData="rows"
       :columnDefs="columns"
