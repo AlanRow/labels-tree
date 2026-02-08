@@ -13,10 +13,10 @@ export default class TreeStore {
   #isCacheValid: boolean
 
   constructor(data: RawItem[]) {
-    // bнициализируем кэш, не очень безопасно
+    // инициализируем кэш, не очень безопасно
     // (из-за возможности поменять внешний массив)
     // но экономим один обход массива
-    this.#cachedArray = data
+    this.#cachedArray = [...data]
     this.#isCacheValid = true
 
     // инициализируем внутреннюю мапу
