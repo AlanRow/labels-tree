@@ -5,7 +5,7 @@ import type { CellValueChangedEvent, ColDef, RowDragEndEvent } from 'ag-grid-ent
 
 import type { RawItem } from '@/models/tree-store/types'
 
-import { ACTIONS_BUTTON_TEXT, GROUP_LABEL, INITIAL_DATA, ITEM_LABEL } from './const'
+import { ACTIONS_BUTTON_TEXT, GROUP_LABEL, ITEM_LABEL } from './const'
 import { getCategoryColumn, getEditableColumns, getViewColumns } from './columns'
 import { getRowId } from './utils'
 import { useModel } from './useModel'
@@ -14,6 +14,12 @@ import TreeHeader from '../tree-header'
 import TreeTable from '../tree-table'
 
 // основной менеджер всего дерева
+const props = withDefaults(
+  defineProps<{
+    initialData?: RawItem[]
+  }>(),
+  { initialData: () => [] },
+)
 
 const {
   rows,
@@ -25,7 +31,7 @@ const {
   moveRowToParent,
   changeRowLabel,
   getChildren,
-} = useModel(INITIAL_DATA)
+} = useModel(props.initialData)
 
 const actionsRenderer = (params: any) => {
   const button = document.createElement('button')
